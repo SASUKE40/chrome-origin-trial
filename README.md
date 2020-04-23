@@ -1,4 +1,4 @@
-# umi project
+# Chrome Origin Trail
 
 ## Getting Started
 
