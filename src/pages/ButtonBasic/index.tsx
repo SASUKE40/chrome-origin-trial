@@ -3,46 +3,26 @@ import styles from './index.less';
 import { Button, message } from 'antd';
 
 export default () => {
-  const onNFCRead = useCallback(() => {
-    message.info('start scanning');
-    if ('NDEFReader' in window) {
-      message.info('NDEFReader');
+  const onNFCRead = useCallback(async () => {
+    message.info('User clicked scan button');
+
+    try {
       const reader = new NDEFReader();
-      reader
-        .scan()
-        .then(() => {
-          message.info('Scan started successfully.');
-          reader.onerror = () => {
-            message.info('Cannot read data from the NFC tag. Try another one?');
-          };
-          reader.onreading = event => {
-            const message = event.message;
-            message.info(JSON.stringify(event, null, 2));
-            for (const record of message.records) {
-              message.info('Record type:  ' + record.recordType);
-              message.info('MIME type:    ' + record.mediaType);
-              message.info('Record id:    ' + record.id);
-              switch (record.recordType) {
-                case 'text':
-                  // TODO: Read text record with record data, lang, and encoding.
-                  break;
-                case 'url':
-                  // TODO: Read URL record with record data.
-                  break;
-                default:
-                // TODO: Handle other records with record data.
-              }
-              message.info(JSON.stringify(record, null, 2));
-            }
-            message.info('NDEF message read.');
-          };
-        })
-        .catch(error => {
-          message.info(`Error! Scan failed to start: ${error}.`);
-        });
-    }
-    if ('NDEFWriter' in window) {
-      /* Write NFC tags */
+      await reader.scan();
+      message.info('> Scan started');
+
+      reader.addEventListener('error', error => {
+        message.error(`Argh! ${error.message}`);
+      });
+
+      reader.addEventListener('reading', event => {
+        const { message, serialNumber } = event;
+        message.info(`> Serial Number: ${serialNumber}`);
+        message.info(`> Records: (${message.records.length})`);
+        message.info(JSON.stringify(event, null, 2));
+      });
+    } catch (error) {
+      message.error('Argh! ' + error);
     }
   }, []);
 
