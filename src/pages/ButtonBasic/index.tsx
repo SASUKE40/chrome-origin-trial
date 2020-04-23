@@ -17,6 +17,7 @@ export default () => {
           };
           reader.onreading = event => {
             const message = event.message;
+            message.info(JSON.stringify(event, null, 2));
             for (const record of message.records) {
               message.info('Record type:  ' + record.recordType);
               message.info('MIME type:    ' + record.mediaType);
@@ -31,7 +32,7 @@ export default () => {
                 default:
                 // TODO: Handle other records with record data.
               }
-              message.info(JSON.stringify(record));
+              message.info(JSON.stringify(record, null, 2));
             }
             message.info('NDEF message read.');
           };
