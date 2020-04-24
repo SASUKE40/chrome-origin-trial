@@ -1,8 +1,9 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import styles from './index.less';
-import { Button, message } from 'antd';
+import { Button, Card, message } from 'antd';
 
 export default () => {
+  const [record, setRecord] = useState();
   const onNFCRead = useCallback(async () => {
     message.info('User clicked scan button');
 
@@ -19,7 +20,7 @@ export default () => {
         const { message, serialNumber } = event;
         message.info(`> Serial Number: ${serialNumber}`);
         message.info(`> Records: (${message.records.length})`);
-        message.info(JSON.stringify(event, null, 2));
+        setRecord(message.records);
       });
     } catch (error) {
       message.error('Argh! ' + error);
@@ -33,6 +34,7 @@ export default () => {
           <Button type="primary" onClick={onNFCRead}>
             Read NFC Message
           </Button>
+          <Card title="NFC Record">{JSON.stringify(record, null, 2)}</Card>
         </div>
       </div>
     </div>
