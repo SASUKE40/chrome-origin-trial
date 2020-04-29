@@ -1,4 +1,4 @@
-# Chrome Origin Trail
+# Chrome Origin Trial
 
 ## Getting Started
 
